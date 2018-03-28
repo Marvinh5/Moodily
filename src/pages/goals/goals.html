@@ -1,0 +1,67 @@
+<!--
+  Generated template for the GoalsPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar color="light">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>{{ 'Goals' | translate }}</ion-title>
+  </ion-navbar>
+
+  <ion-toolbar>
+      <ion-segment [(ngModel)]="goalStatus" color="light">
+        <ion-segment-button value="completed">
+            {{'Completed' | translate }}
+        </ion-segment-button>
+        <ion-segment-button value="missed">
+            {{'Missed' | translate }}
+        </ion-segment-button>
+      </ion-segment>
+    </ion-toolbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <ion-list *ngIf="goalStatus == 'completed'">
+
+      <ion-item *ngFor="let goal of completedGoals">
+          <ion-label style="text-transform: capitalize">
+            {{goal.title}}
+          </ion-label>
+          <ion-label class="">
+            {{goal.date}}
+          </ion-label>
+      </ion-item>
+
+  </ion-list>
+
+  <ion-list *ngIf="goalStatus == 'missed'">
+
+      <ion-item *ngFor="let goal of missedGoals">
+          <ion-label style="text-transform: capitalize">
+            {{goal.title}}
+          </ion-label>
+          <ion-label class="">
+            {{goal.date}}
+          </ion-label>
+      </ion-item>
+
+  </ion-list>
+  
+    <!-- <ion-tabs #myTabs>
+        <ion-tab [root]="tab1Root">
+          {{'Completed' | translate }}
+        </ion-tab>
+        <ion-tab [root]="tab2Root">
+          {{'Missed' | translate }}
+        </ion-tab>
+    </ion-tabs> -->
+
+</ion-content>

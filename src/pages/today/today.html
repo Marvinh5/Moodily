@@ -1,0 +1,50 @@
+<!--
+  Generated template for the TodayPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar color="light">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>{{ 'Today' | translate }}</ion-title>
+
+    <ion-buttons end>
+        <button ion-button icon-only (click)="openAddGoalModal()">
+          <ion-icon name="add"></ion-icon>
+        </button>
+        <button *ngIf="getSelectedGoals().length > 0" ion-button icon-only (click)="removeSelectedGoals()" color="redish">
+            <ion-icon name="trash"></ion-icon>
+        </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+  <ion-list>
+      <ion-item-sliding *ngFor="let goal of pendingGoals" #item>
+        <ion-item  class="" icon-end>
+          <ion-label>{{goal.title}}</ion-label>
+          <ion-label color="primary">{{goal.percent || '0' }}%</ion-label>
+          <ion-checkbox [(ngModel)]="goal.selected"></ion-checkbox>
+        </ion-item>
+        <ion-item-options side="right">
+            <button ion-button (click)="setPercent(goal)">Progress %</button>
+            <button ion-button color="secondary" (click)="complete(goal)">COMPLETE(100%)</button>
+          </ion-item-options>
+      </ion-item-sliding>
+  </ion-list>
+</ion-content>
+
+
+<ion-footer>
+  <ion-list class="">
+    <form ion-item icon-end (ngSubmit)="addComments()" >
+      <ion-input name="comment" [(ngModel)]="comment" [disabled]="getSelectedGoals().length == 0" placeholder="Daily comment"> </ion-input>        
+    </form>
+  </ion-list>
+</ion-footer>
