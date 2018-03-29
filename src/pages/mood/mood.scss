@@ -1,0 +1,17 @@
+page-mood {
+    
+     ion-slide  img {
+        height: 10vh !important;
+    }
+
+    ion-slide.not-active img {
+        height: 50px !important;
+    }
+
+    ion-slide.focus img {
+        height: 20vh;
+    }
+
+
+
+}

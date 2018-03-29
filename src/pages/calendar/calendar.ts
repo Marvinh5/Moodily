@@ -1,3 +1,4 @@
+import { DbProvider } from './../../providers/db/db';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
@@ -15,13 +16,24 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class CalendarPage {
 
-  pendingGoals: {title: string, selected: boolean}[]= []
+  dates: {
+    happy?: number, date?: Date, sad?: number, stressed?: number, angry?: number, inLove?: number, embarrassed?: number
+  }[] = [{
+    happy: 1,
+    date: new Date(),
+    sad: 2
+  }
+    ]
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  by: 'month' | 'day' | 'week' = 'month'
+
+  constructor(public db: DbProvider, public navCtrl: NavController, public navParams: NavParams) {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad CalendarPage');
+    this.db.getGoalsBy(this.by).then((dates:any) => {
+      this.dates = dates;
+    })
   }
 
 }

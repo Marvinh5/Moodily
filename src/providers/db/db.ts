@@ -22,7 +22,7 @@ import moment from 'moment'
 @Injectable()
 export class DbProvider {
 
-  constructor(private events: Events, private storage: Storage) {}
+  constructor(private events: Events, private storage: Storage) { }
 
   async addGoal(goal: IGoal) {
 
@@ -44,34 +44,34 @@ export class DbProvider {
   }
 
   async modifyGoal(goal) {
-	let goals: any[] = await this.storage.get('goals');
-	
-	console.log()
+    let goals: any[] = await this.storage.get('goals');
+
+    console.log()
 
     let modifiedGoals = goals.map(x => {
 
-	  console.log(x.id, goal.id);
+      console.log(x.id, goal.id);
 
       if (x.id == goal.id) {
-		console.log('modifying', x, goal, Object.assign(x, goal))
-        x =  Object.assign(x, goal);
+        console.log('modifying', x, goal, Object.assign(x, goal))
+        x = Object.assign(x, goal);
       }
 
       return x;
-	
-	});
 
-	console.log('modifiedGoals', JSON.stringify(modifiedGoals))
+    });
 
-	await this.storage.set('goals', modifiedGoals);
-	
-	this.events.publish('goals', modifiedGoals);
+    console.log('modifiedGoals', JSON.stringify(modifiedGoals))
+
+    await this.storage.set('goals', modifiedGoals);
+
+    this.events.publish('goals', modifiedGoals);
   }
 
   async goals() {
-	 return await  this.storage.get('goals');
+    return await this.storage.get('goals');
   }
- 
+
   async addComment(goalId, comment) {
 
     let comments = await this.storage.get('comments');
@@ -94,6 +94,35 @@ export class DbProvider {
 
   }
 
+
+  async getGoalsBy(dateGroup) {
+
+    let goals = await this.storage.get('moods');
+
+    let goalsGroupedBy = _.groupBy(goals, (goal) => {
+
+      let d = moment(goal.date);
+      let key: any
+
+      if (dateGroup == 'month') key = d.month();
+      if (dateGroup == 'day') key = d.dayOfYear();
+      if (dateGroup == 'week') key = d.isoWeeksInYear();
+
+      return d.year() + key
+    });
+
+    Object.keys(goalsGroupedBy).map(key => {
+
+      let value = goalsGroupedBy[key];
+
+      // value.reduce((prev, current, index)=> {
+      //     return 
+      // }, {})
+
+    });
+
+  }
+
   async getTodayGoals() {
 
     try {
@@ -103,7 +132,7 @@ export class DbProvider {
       if (!goals) return [];
 
       let resultGoals = goals.filter(goal => {
-        return moment(goal.date).isSameOrAfter(moment(), 'day') && 
+        return moment(goal.date).isSameOrAfter(moment(), 'day') && (!goal.done || goal.percent < 100)
       });
 
       console.log('resultgoals', resultGoals);
@@ -153,6 +182,17 @@ export class DbProvider {
     return _.find(goals, {
       id: goalId
     })
+  }
+
+
+  async addMood(mood) {
+
+    let moods: any[] = await this.storage.get('moods') || [];
+
+    moods.push(Object.assign(mood, {date: new Date()}));
+
+    await this.storage.set('moods', moods);
+
   }
 
 }

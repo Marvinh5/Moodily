@@ -45,6 +45,29 @@ ion-icon {
         height: 20px;
     }
 
+    &[class*="moodly-happy"] {
+        mask-image: url(../assets/icon/happy.png);
+        height: 20px;
+    }
+
+    &[class*="moodly-angry"] {
+        mask-image: url(../assets/icon/angry.png);
+        height: 20px;
+    }
+
+
+    &[class*="moodly-sad"] {
+        mask-image: url(../assets/icon/sad.png);
+        height: 20px;
+    }
+
+    .alignCenter {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+
 
 }
 

@@ -33,7 +33,9 @@
           <ion-checkbox [(ngModel)]="goal.selected"></ion-checkbox>
         </ion-item>
         <ion-item-options side="right">
-            <button ion-button (click)="setPercent(goal)">Progress %</button>
+            <button ion-button (click)="setPercent(goal)">
+              Progress %
+            </button>
             <button ion-button color="secondary" (click)="complete(goal)">COMPLETE(100%)</button>
           </ion-item-options>
       </ion-item-sliding>

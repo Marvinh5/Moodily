@@ -1,3 +1,4 @@
+import { MoodPage } from './../pages/mood/mood';
 import { CalendarPage } from './../pages/calendar/calendar';
 import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform } from 'ionic-angular';
@@ -15,7 +16,7 @@ import { GoalsPage } from '../pages/goals/goals';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any = HomePage;
+  rootPage: any = MoodPage;
 
   pages: Array<{title: string, component: any, icon: string}>;
 

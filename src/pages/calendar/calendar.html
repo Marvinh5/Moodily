@@ -17,16 +17,42 @@
 
 
 <ion-content padding>
-  <ion-list>
-       <ion-item *ngFor="let goal of pendingGoals" class="">
-          <ion-label>{{goal.title}}</ion-label>
-          <ion-checkbox [(ngModel)]="goal.selected"></ion-checkbox>
-       </ion-item>
+  <ion-list inset>
+    <ion-card *ngFor="let date of dates" class="">
+      <ion-card-header>{{date.date | date:'medium'}}</ion-card-header>
+      <ion-list class="">
+        <ion-item class="alignCenter" *ngIf="date.happy > 0">
+          <img src="./assets/icon/happy.png" alt="">&nbsp; {{'Happy' | translate}}&nbsp;
+          <ion-badge item-end>x{{date.happy}}</ion-badge>
+        </ion-item>
+        <ion-item class="alignCenter" *ngIf="date.sad > 0">
+          <img src="./assets/icon/sad.png" alt="">&nbsp; {{'Sad' | translate}}&nbsp;
+          <ion-badge item-end>x{{date.sad}}</ion-badge>
+        </ion-item>
+
+        <ion-item class="alignCenter" *ngIf="date.angry > 0">
+          <img src="./assets/icon/angry.png" alt="">&nbsp; {{'Angry' | translate}}&nbsp;
+          <ion-badge item-end>x{{date.angry}}</ion-badge>
+        </ion-item>
+        <ion-item class="alignCenter" *ngIf="date.stressed > 0">
+            <img src="./assets/icon/angry.png" alt="">&nbsp; {{'Stressed' | translate}}&nbsp;
+            <ion-badge item-end>x{{date.stressed}}</ion-badge>
+          </ion-item>
+          <ion-item class="alignCenter" *ngIf="date.inLove > 0">
+              <img src="./assets/icon/inLove.png" alt="">&nbsp; {{'In love' | translate}}&nbsp;
+              <ion-badge item-end>x{{date.inLove}}</ion-badge>
+            </ion-item>
+            <ion-item class="alignCenter" *ngIf="date.embarrassed > 0">
+                <img src="./assets/icon/embarrassed.png" alt="">&nbsp; {{'Embarrassed' | translate}}&nbsp;
+                <ion-badge item-end>x{{date.embarrassed}}</ion-badge>
+              </ion-item>
+      </ion-list>
+    </ion-card>
   </ion-list>
 </ion-content>
 
 
-<ion-footer>
+<!-- <ion-footer>
   <ion-list class="">
       <ion-item class="">
         <button ion-button ion-start medium>
@@ -35,4 +61,4 @@
         </button>
       </ion-item>
   </ion-list>
-</ion-footer>
+</ion-footer> -->

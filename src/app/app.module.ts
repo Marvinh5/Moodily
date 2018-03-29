@@ -1,3 +1,4 @@
+import { MoodPage } from './../pages/mood/mood';
 import { CalendarPage } from './../pages/calendar/calendar';
 import { GoalsPage } from './../pages/goals/goals';
 import { BrowserModule } from '@angular/platform-browser';
@@ -31,7 +32,8 @@ export function createTranslateLoader(http: Http) {
     ListPage,
     GoalsPage,
     CalendarPage,
-    TodayPage
+    TodayPage,
+    MoodPage
   ],
   imports: [
     BrowserModule,
@@ -51,7 +53,8 @@ export function createTranslateLoader(http: Http) {
     ListPage,
     GoalsPage,
     CalendarPage,
-    TodayPage
+    TodayPage,
+    MoodPage
   ],
   providers: [
     StatusBar,

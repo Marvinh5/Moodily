@@ -1,0 +1,35 @@
+<!--
+  Generated template for the MoodPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar color="light">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Pick your mood</ion-title>
+    <ion-buttons *ngIf="thereIsASelectedMood()" class="" end>
+      <button ion-button  (click)="next()">
+        NEXT
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <ion-slides pager="true" #slide direction="vertical" slidesPerView="3" effect="slide">
+
+      <ion-slide *ngFor="let mood of moods" (click)="selectMood(mood)">
+        <img [src]="sanatizeUrl(mood)" alt="" srcset="">
+        <h3>{{mood.name}}</h3>
+      </ion-slide>
+
+  </ion-slides>
+
+</ion-content>
