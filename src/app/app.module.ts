@@ -1,3 +1,4 @@
+import { CalendarPageModule } from './../pages/calendar/calendar.module';
 import { MoodPage } from './../pages/mood/mood';
 import { CalendarPage } from './../pages/calendar/calendar';
 import { GoalsPage } from './../pages/goals/goals';
@@ -20,6 +21,13 @@ import {Http, HttpModule} from '@angular/http';
 import { IonicStorageModule } from '@ionic/storage';
 import { TodayPage } from '../pages/today/today';
 
+import {TooltipModule} from "ngx-tooltip";
+
+
+
+// import {module} from '@angular/animations'
+
+
 export function createTranslateLoader(http: Http) {
   return new TranslateStaticLoader(http, './assets/i18n', '.json');
 }
@@ -31,9 +39,10 @@ export function createTranslateLoader(http: Http) {
     HomePage,
     ListPage,
     GoalsPage,
-    CalendarPage,
+    // CalendarPage,
     TodayPage,
-    MoodPage
+    MoodPage,
+    
   ],
   imports: [
     BrowserModule,
@@ -44,7 +53,9 @@ export function createTranslateLoader(http: Http) {
             useFactory: (createTranslateLoader),
             deps: [Http]
       }),
-    IonicStorageModule.forRoot()
+    IonicStorageModule.forRoot(),
+    TooltipModule,
+    CalendarPageModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [

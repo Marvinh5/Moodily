@@ -2,7 +2,7 @@ import {
   IGoal
 } from './../../models/goals';
 import {
-  Injectable
+  Injectable, group
 } from '@angular/core';
 import {
   Storage
@@ -72,55 +72,124 @@ export class DbProvider {
     return await this.storage.get('goals');
   }
 
-  async addComment(goalId, comment) {
+  async addComment(comment) {
 
     let comments = await this.storage.get('comments');
 
     if (!comments) comments = [];
 
     comments.push({
-      goalId,
+      id: uuid(),
       content: comment
     })
 
     await this.storage.set('comments', comments);
+
+    this.events.publish('comments');
   }
 
-  async getComments(goalId) {
+  // async getComments(goalId) {
 
-    let comments: any[] = await this.storage.get('comments');
+  //   let comments: any[] = await this.storage.get('comments');
 
-    return comments.filter(comment => comment.goalId = goalId);
+  //   return comments.filter(comment => comment.goalId = goalId);
 
-  }
+  // }
 
 
   async getGoalsBy(dateGroup) {
 
-    let goals = await this.storage.get('moods');
+    let goals = await this.storage.get('goals');
 
-    let goalsGroupedBy = _.groupBy(goals, (goal) => {
+    console.log('goals=>' , JSON.stringify(goals));
 
-      let d = moment(goal.date);
+    let groupByFunction = (goal) => {
+
+      let d:moment.Moment = moment(goal.date);
       let key: any
 
-      if (dateGroup == 'month') key = d.month();
+      if (dateGroup == 'month') key = d.format('M');
+      // if (dateGroup == 'month') key = d.month();
+      
       if (dateGroup == 'day') key = d.dayOfYear();
-      if (dateGroup == 'week') key = d.isoWeeksInYear();
+      if (dateGroup == 'week') key = d.isoWeek();
 
-      return d.year() + key
+      return d.year() + '-' + key
+    }
+
+    let goalsGroupedBy = _.groupBy(goals, groupByFunction);
+
+    let goalsCount = Object.keys(goalsGroupedBy).map(key => {
+      return {
+        completedGoals: goalsGroupedBy[key].filter(goal => {
+          return goal.done || goal.percent >= 100
+        }).length,
+        missedGoals: goalsGroupedBy[key].filter(goal => {
+          return (!goal.done && goal.percent < 100) && moment(goal.date).isBefore(moment(), 'day')
+        }).length,
+        key
+      }
     });
 
-    Object.keys(goalsGroupedBy).map(key => {
+    let moods = await this.storage.get('moods');
 
-      let value = goalsGroupedBy[key];
+    let moodsGroupedBy = _.groupBy(moods, groupByFunction);
 
-      // value.reduce((prev, current, index)=> {
-      //     return 
-      // }, {})
+    let moodCount = Object.keys(moodsGroupedBy).map(key => {
+      return {
+        key, ...moodsGroupedBy[key].reduce((prev, current, index) => {
 
+          if (current.id == "happy") prev.happy += 1;
+          if (current.id == "sad") prev.sad += 1;
+          if (current.id == "embarrassed") prev.embarrassed += 1;
+          if (current.id == "angry") prev.angry += 1;
+          if (current.id == "nervous") prev.nervous += 1;
+          if (current.id == "inLove") prev.inLove += 1;
+
+
+
+          return prev;
+
+        }, { happy: 0, sad: 0, embarrassed: 0, angry: 0, nervous: 0, inLove: 0 })
+      }
     });
 
+    let goalsPlusMoods = _.groupBy(goalsCount.concat(moodCount), x => x.key); 
+
+    let result = Object.keys(goalsPlusMoods).map(key=> {
+      
+      let val = goalsPlusMoods[key];
+
+      let date, dateString;
+
+      if(dateGroup == 'month') date = moment(key, 'YYYY-M').toDate();
+      if(dateGroup == 'day') date = moment(key, 'YYYY-DDD').toDate();
+      if(dateGroup == 'week') {
+        // console.log(key)
+        date = moment(key, 'YYYY-W').toDate();
+        let start:moment.Moment = moment(date).startOf('isoWeek');
+        let end:moment.Moment = moment(date).endOf('isoWeek');
+
+        dateString = `${start.format('MMM')} ${start.format('Do')} to ${start.format('MMM')}  ${end.format('Do')}, ${end.year()}`
+      }
+      
+      return {date, dateString, ...val.reduce((prev, current, index)=> {
+          return Object.assign(prev, current);
+      }, {})}
+      
+    });
+
+    return result;
+
+  }
+
+  async getTodayMoods() {
+    
+    var moods: any[] = await this.storage.get('moods') || [];
+    
+
+    return moods.filter(mood=> moment(mood.date).isSameOrAfter(moment(), 'day'))
+  
   }
 
   async getTodayGoals() {
@@ -132,7 +201,8 @@ export class DbProvider {
       if (!goals) return [];
 
       let resultGoals = goals.filter(goal => {
-        return moment(goal.date).isSameOrAfter(moment(), 'day') && (!goal.done || goal.percent < 100)
+        return moment(goal.date).isSameOrAfter(moment(), 'day') 
+        // && (!goal.done || goal.percent < 100)
       });
 
       console.log('resultgoals', resultGoals);
@@ -141,6 +211,27 @@ export class DbProvider {
     } catch (err) {
       console.error('erro on goals', JSON.stringify(err))
     }
+  }
+
+  async undoGoal(goalId){
+    
+      let goals = await this.storage.get('goals');
+
+      if(!goals) return [];
+
+      goals = goals.map(goal=> {
+        if(goal.id == goalId){
+            goal.done = false;
+        }
+        return goal;
+      });
+
+      await this.storage.set('goals', goals);
+
+      this.events.publish('goals', goals);
+
+      return true;
+
   }
 
   async removeGoals(goalIds: string[]) {
@@ -189,9 +280,75 @@ export class DbProvider {
 
     let moods: any[] = await this.storage.get('moods') || [];
 
-    moods.push(Object.assign(mood, {date: new Date()}));
+    let newMood = Object.assign(mood, { date: new Date() })
+
+    moods.push(newMood);
+
+    this.events.publish('newMood', newMood)
 
     await this.storage.set('moods', moods);
+
+  }
+
+  async getComments(from, to) {
+
+    let comments: any[] = await this.storage.get('comments') || [];
+
+    comments = comments.sort((a, b) => {
+
+      let aDate = new Date(a.date).getTime();
+      let bDate = new Date(b.date).getTime();
+
+      return aDate - bDate;
+
+    });
+
+    return comments.slice(from || 0, to || 10)
+
+  }
+
+  async removeComments(commentsIds: string[]) {
+
+    let comments: any[] = await this.storage.get('comments') || [];
+
+    comments = comments.filter(comment => commentsIds.indexOf(comment.id) == -1);
+
+    await this.storage.set('comments', comments);
+
+    this.events.publish('comments');
+
+    return comments;
+
+  }
+
+  async editComment(id, content) {
+
+    let comments: any[] = await this.storage.get('comments') || [];
+    
+    comments = comments.map(comment=> {
+      if(comment.id == id){
+        comment.content = content
+      }
+      return comment;
+    });
+
+    await this.storage.set('comments', comments);
+
+    this.events.publish('comments');
+
+    return comments;
+
+  }
+
+  async getCommentsFromToday() {
+
+    // await this.storage.set('comments', []); 
+
+    let comments: any[] = await this.storage.get('comments') || [];
+
+    return comments.filter(comment => {
+      return moment(comment.date).isSameOrAfter(new Date(), 'day')
+    });
 
   }
 

@@ -1,17 +1,42 @@
 page-mood {
-    
-     ion-slide  img {
+    ion-slide img {
         height: 10vh !important;
     }
-
     ion-slide.not-active img {
         height: 50px !important;
     }
-
     ion-slide.focus img {
         height: 20vh;
     }
+    background-color: blue; // // .scroll-content {
+    //     background: url('./assets/icon/background.png') !important;
+    //     background-image: url('./assets/icon/background.png') !important;
+    // // }
+    // .swiper-slide.swiper-slide-active h3 {
+    //     color:white;
+    // }
+    .wrapper {
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#87e0fd+1,53cbf1+40,4290ff+100 */
+        background: #87e0fd;
+        /* Old browsers */
+        background: -moz-linear-gradient(top, #87e0fd 1%, #53cbf1 40%, #4290ff 100%);
+        /* FF3.6-15 */
+        background: -webkit-linear-gradient(top, #87e0fd 1%, #53cbf1 40%, #4290ff 100%);
+        /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(to bottom, #87e0fd 1%, #53cbf1 40%, #4290ff 100%);
+        /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#87e0fd', endColorstr='#4290ff', GradientType=0);
+        /* IE6-9 */
+    }
 
-
-
+    .swiper-pagination-bullet.swiper-pagination-bullet-active {
+        background:  #FFC764
+    }
 }
+
+// ion-page.page-mood{
+//     background: blue;
+// }
+// ion-page.page-mood > ion-content{
+//   background-color: transparent;
+// }

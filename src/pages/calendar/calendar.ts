@@ -18,21 +18,22 @@ export class CalendarPage {
 
   dates: {
     happy?: number, date?: Date, sad?: number, stressed?: number, angry?: number, inLove?: number, embarrassed?: number
-  }[] = [{
-    happy: 1,
-    date: new Date(),
-    sad: 2
-  }
-    ]
+  }[] = [];
 
-  by: 'month' | 'day' | 'week' = 'month'
+  by: 'month' | 'day' | 'week' = 'day'
 
   constructor(public db: DbProvider, public navCtrl: NavController, public navParams: NavParams) {
   }
 
   ionViewDidLoad() {
+    this.getGoals();
+  }
+
+  getGoals() {
     this.db.getGoalsBy(this.by).then((dates:any) => {
-      this.dates = dates;
+      this.dates = dates.sort((a, b) => {
+        return  b.date.getTime() - a.date.getTime() 
+      });
     })
   }
 

@@ -21,15 +21,22 @@
 </ion-header>
 
 
-<ion-content padding>
+<ion-content color="light">
 
-  <ion-slides pager="true" #slide direction="vertical" slidesPerView="3" effect="slide">
+  <div class="wrapper" style="height: 100%;width: 100%" >  
+    <ion-slides pager="true" #slide direction="vertical" slidesPerView="3" effect="slide">
 
-      <ion-slide *ngFor="let mood of moods" (click)="selectMood(mood)">
+      <ion-slide *ngFor="let mood of moods" (click)="selectMood(mood)" [ngStyle]="{selected: mood.selected}">
         <img [src]="sanatizeUrl(mood)" alt="" srcset="">
-        <h3>{{mood.name}}</h3>
+        <h3 *ngIf="mood.selected" style="color:white; font-weight: bold">{{mood.name}}</h3>
+        <h3 *ngIf="!mood.selected" style="color: #E2E2E2">{{mood.name}}</h3>
       </ion-slide>
 
+      <ion-slide></ion-slide>
+
   </ion-slides>
+  </div>
+
+  
 
 </ion-content>

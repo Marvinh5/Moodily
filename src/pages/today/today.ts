@@ -21,29 +21,141 @@ export class TodayPage {
 
   comment:string;
 
+  type: string = "goals"
+
+  commentsFilter = { from: 0 , to: 50};
+
+  comments: any[] = [];
+
+  commentId:any 
+
   constructor(private events: Events, public db: DbProvider, public alertCtrl: AlertController, public navCtrl: NavController, public navParams: NavParams) {
   }
 
   ionViewDidLoad() {
 
-    
-
     this.db.getTodayGoals().then(goals => {
-      this.pendingGoals = goals;
+      this.pendingGoals = goals.sort((a, b)=> new Date(b.date).getTime() - new Date(a.date).getTime() );
+    });
+
+    this.getComments();
+
+    this.events.subscribe('comments', ()=> {
+      this.getComments();
     });
     
     this.events.subscribe('goals', (goals: IGoal[]) => {
-      this.pendingGoals = goals.filter(goal=>  !goal.done);
+      
+      this.db.getTodayGoals().then(goals=> {
+        this.pendingGoals = goals.sort((a, b)=> new Date(b.date).getTime() - new Date(a.date).getTime() );
+      });
+
     });
 
   }
 
 
+  undoGoal(goalId) {
+    this.db.undoGoal(goalId)
+  }
+
+
+
+
+  getComments(){ 
+    
+    this.db.getCommentsFromToday().then(comments=> {
+      this.comments = comments
+    });
+
+  }
+
+
+  deleteGoal(goal) {
+    
+    let alert = this.alertCtrl.create({
+      message: 'are you sure you want to delete this goal?',
+      buttons: [
+        {
+          text: 'Cancel'
+        },
+        {
+          text: 'Accept',
+          handler: ()=> {
+              this.db.removeGoals([goal.id])
+          }
+        }
+      ]
+    });
+
+    alert.present()
+
+  }
+
+
+
+  deleteComment(comment) {
+
+    let alert = this.alertCtrl.create({
+      message: 'are you sure you want to delete this comment?',
+      buttons: [
+        {
+          text: 'Cancel'
+        },
+        {
+          text: 'Accept',
+          handler: ()=> {
+            this.db.removeComments([comment.id])
+          }
+        }
+      ]
+    });
+
+    alert.present()
+  }
+
+
+  editComment(comment){
+    this.alertCtrl.create({
+      message: 'Edit comment',
+      inputs: [
+        {
+          type: 'text-area',
+          name: 'comment',
+          value: comment.content
+        }
+      ],
+      buttons:[
+        {
+          text: 'Cancel'
+        },
+        {
+          text: 'Accept',
+          handler: (data)=> {
+            if(data.comment && data.comment != ""){
+              console.log(comment.id, data.comment);
+              this.db.editComment(comment.id, data.comment);
+            }
+          }
+        }
+      ]
+    }).present();
+  }
+
 
   async removeSelectedGoals() {
     let goals: string[] = this.pendingGoals.filter(goal=> goal.selected).map(goal=> goal.id);
-    console.log('goals to remove', JSON.stringify(goals));
-    await this.db.removeGoals(goals);
+
+    if(goals.length > 0) {
+      await this.db.removeGoals(goals);    
+    }
+
+    let comments: string[] = this.comments.filter(comment => comment.selected).map(comment=> comment.id);
+
+    if(comments.length > 0 ){
+      await this.db.removeComments(comments); 
+    }
+
   }
 
   getSelectedGoals() {
@@ -52,6 +164,10 @@ export class TodayPage {
 
   complete(goal) {
     this.db.modifyGoal(Object.assign(goal, {percent: 100, done: true}));
+  }
+
+  isAnyCommentSelected() {
+    return this.comments.filter(comment=>  comment.selected).length > 0
   }
 
   setPercent(goal) {
@@ -82,12 +198,8 @@ export class TodayPage {
   }
 
   async addComments() {
-    
-    let goals: any[] = this.pendingGoals.filter(goal=> goal.selected).map(goal=> goal.id);
-    
-    await Promise.all(goals.map(async goalId=> {
-     await this.db.addComment(goalId, this.comment)
-    }));
+
+    await this.db.addComment(this.comment)
 
     this.comment = "";
 

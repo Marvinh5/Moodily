@@ -53,9 +53,11 @@ export class MoodPage {
   ]
 
   constructor(private db: DbProvider, public santaizer: DomSanitizer, public navCtrl: NavController, public navParams: NavParams) {
+      
   }
 
   ionViewDidLoad() {
+    
     console.log('ionViewDidLoad MoodPage');
   }
 

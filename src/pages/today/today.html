@@ -13,40 +13,92 @@
     <ion-title>{{ 'Today' | translate }}</ion-title>
 
     <ion-buttons end>
-        <button ion-button icon-only (click)="openAddGoalModal()">
-          <ion-icon name="add"></ion-icon>
-        </button>
-        <button *ngIf="getSelectedGoals().length > 0" ion-button icon-only (click)="removeSelectedGoals()" color="redish">
-            <ion-icon name="trash"></ion-icon>
-        </button>
+      <button *ngIf="type=='goals'" ion-button icon-only (click)="openAddGoalModal()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+      <!-- <button *ngIf="getSelectedGoals().length > 0 " ion-button icon-only (click)="removeSelectedGoals()">
+        <ion-icon name="trash"></ion-icon>
+      </button> -->
     </ion-buttons>
   </ion-navbar>
+
+  <ion-toolbar color="light2">
+    <ion-segment [(ngModel)]="type">
+      <ion-segment-button value="goals">
+        {{'GOALS' | translate }}
+      </ion-segment-button>
+      <ion-segment-button value="comments">
+        {{'COMMENTS' | translate }}
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
 
 </ion-header>
 
 <ion-content padding>
-  <ion-list>
-      <ion-item-sliding *ngFor="let goal of pendingGoals" #item>
-        <ion-item  class="" icon-end>
-          <ion-label>{{goal.title}}</ion-label>
-          <ion-label color="primary">{{goal.percent || '0' }}%</ion-label>
-          <ion-checkbox [(ngModel)]="goal.selected"></ion-checkbox>
-        </ion-item>
-        <ion-item-options side="right">
-            <button ion-button (click)="setPercent(goal)">
-              Progress %
-            </button>
-            <button ion-button color="secondary" (click)="complete(goal)">COMPLETE(100%)</button>
-          </ion-item-options>
-      </ion-item-sliding>
+  <ion-list *ngIf="type=='goals'">
+    <ion-item-sliding *ngFor="let goal of pendingGoals" #item>
+
+      <ion-item class="" icon-end *ngIf="!goal.done">
+        <ion-label>{{goal.title}}</ion-label>
+        <!-- <ion-label color="primary">{{goal.percent || '0' }}%</ion-label> -->
+        <!-- <ion-checkbox [(ngModel)]="goal.selected"></ion-checkbox> -->
+      </ion-item>
+
+      <button ion-item  *ngIf="goal.done">
+        <ion-label>
+          {{goal.title}}
+        </ion-label>
+        <!-- <ion-label color="secondary">completed</ion-label> -->
+        <ion-icon item-end  name="checkmark" color="secondary"></ion-icon>
+      </button>
+
+      <ion-item-options side="right" *ngIf="goal.done">
+          <button ion-button (click)="undoGoal(goal.id)" color="redish">
+            rollback
+          </button>
+          <!-- <button ion-button color="secondary" (click)="complete(goal)">COMPLETE</button> -->
+      </ion-item-options>
+
+      <ion-item-options side="right" *ngIf="!goal.done">
+        <button ion-button (click)="deleteGoal(goal)" color="redish">
+          Delete
+        </button>
+        <button ion-button color="secondary" (click)="complete(goal)">COMPLETE</button>
+      </ion-item-options>
+
+
+    </ion-item-sliding>
+  </ion-list>
+
+  <ion-list *ngIf="type=='comments'">
+    <ion-card *ngFor="let comment of comments">
+      <ion-card-content>
+        {{comment.content}}
+      </ion-card-content>
+      <ion-row class="">
+        <ion-col col-2 class="">
+          <button (click)="deleteComment(comment)" ion-button class="" icon-only clear medium>
+            <ion-icon class="" name="trash"></ion-icon>
+          </button>
+        </ion-col>
+
+        <ion-col col-2 class="">
+          <button ion-button class="" icon-only clear medium (click)="editComment(comment)">
+            <ion-icon class="" name="create"></ion-icon>
+          </button>
+        </ion-col>
+      </ion-row>
+    </ion-card>
   </ion-list>
 </ion-content>
 
 
-<ion-footer>
+<ion-footer *ngIf="type=='comments'">
   <ion-list class="">
-    <form ion-item icon-end (ngSubmit)="addComments()" >
-      <ion-input name="comment" [(ngModel)]="comment" [disabled]="getSelectedGoals().length == 0" placeholder="Daily comment"> </ion-input>        
+    <form ion-item icon-end (ngSubmit)="addComments()">
+      <ion-input name="comment" [(ngModel)]="comment" placeholder="Add comment">
+      </ion-input>
     </form>
   </ion-list>
 </ion-footer>

@@ -13,7 +13,7 @@
     <ion-title>{{ 'Goals' | translate }}</ion-title>
   </ion-navbar>
 
-  <ion-toolbar>
+  <ion-toolbar color="light2">
       <ion-segment [(ngModel)]="goalStatus" color="light">
         <ion-segment-button value="completed">
             {{'Completed' | translate }}
@@ -36,9 +36,13 @@
             {{goal.title}}
           </ion-label>
           <ion-label class="">
-            {{goal.date}}
+            {{goal.date | date: 'dd/M/yyyy'}}
           </ion-label>
       </ion-item>
+
+      <ion-infinite-scroll *ngIf="goalsCompletedPagination.to < goalsCompletedPagination.total" (ionInfinite)="loadMoreCompletedGoals($event)">
+          <ion-infinite-scroll-content></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
 
   </ion-list>
 
@@ -49,9 +53,13 @@
             {{goal.title}}
           </ion-label>
           <ion-label class="">
-            {{goal.date}}
+              {{goal.date | date: 'dd/M/yyyy'}}
           </ion-label>
       </ion-item>
+
+      <ion-infinite-scroll *ngIf="goalsMissedGoalsPagination.to < goalsMissedGoalsPagination.total" (ionInfinite)="loadMissedGoals($event)">
+          <ion-infinite-scroll-content></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
 
   </ion-list>
   

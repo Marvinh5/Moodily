@@ -1,6 +1,4 @@
 // http://ionicframework.com/docs/theming/
-
-
 // App Global Sass
 // --------------------------------------------------
 // Put style rules here that you want to apply globally. These
@@ -14,10 +12,7 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
-
-
 ion-icon {
-
     &[class*="moodly-"] {
         // Instead of using the font-based icons
         // We're applying SVG masks
@@ -27,50 +22,30 @@ ion-icon {
         background: currentColor;
         width: 1em;
         height: 1.4em;
-    }
-    // custom icons
+    } // custom icons
     &[class*="moodly-world"] {
-        mask-image: url(../assets/icon/map.svg);
-        // height: 20px;
-        
+        mask-image: url(../assets/icon/map.svg); // height: 20px;
     }
-
     &[class*="moodly-goal"] {
-        mask-image: url(../assets/icon/goal.png);
-        // height: 20px;
+        mask-image: url(../assets/icon/goal.png); // height: 20px;
     }
-
     &[class*="moodly-percent"] {
         mask-image: url(../assets/icon/percent.svg);
         height: 20px;
     }
-
     &[class*="moodly-happy"] {
         mask-image: url(../assets/icon/happy.png);
         height: 20px;
     }
-
     &[class*="moodly-angry"] {
         mask-image: url(../assets/icon/angry.png);
         height: 20px;
     }
-
-
     &[class*="moodly-sad"] {
         mask-image: url(../assets/icon/sad.png);
         height: 20px;
     }
-
-    .alignCenter {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-
-
 }
-
 
 .center-stuff ion-label {
     display: -webkit-box;
@@ -78,6 +53,25 @@ ion-icon {
     display: -ms-flexbox;
     display: -webkit-flex;
     display: flex;
-    align-items: center;
-    // justify-content: center;
+    align-items: center; // justify-content: center;
+}
+
+
+button[ion-fab] {
+    overflow: visible;
+    position: relative;
+    contain: layout;
+
+    ion-label {
+        position: absolute;
+        top: -8px;
+        right: 40px;
+
+        color: black;
+        background-color: white;;
+        line-height: 24px;
+        padding: 4px 8px;
+        border-radius: 4px;
+        box-shadow: 0 1px 2px rgba(0,0,0,.3);
+    }
 }

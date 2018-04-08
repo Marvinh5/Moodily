@@ -16,11 +16,35 @@
 </ion-header>
 
 
-<ion-content padding>
+<ion-content>
   <ion-list inset>
-    <ion-card *ngFor="let date of dates" class="">
-      <ion-card-header>{{date.date | date:'medium'}}</ion-card-header>
+
+      <ion-item>
+          <ion-label>Group By</ion-label>
+          <ion-select [(ngModel)]="by" (ngModelChange)="getGoals()">
+            <ion-option value="day">Day</ion-option>
+            <ion-option value="month">Month</ion-option>
+            <ion-option value="week">Week</ion-option>
+          </ion-select>
+      </ion-item>
+    
+    <ion-card *ngFor="let date of dates" class="" >
+      <ion-card-header *ngIf="by == 'day'">{{date.date | date:'MMMM d, y'}}</ion-card-header>
+      <ion-card-header *ngIf="by == 'month'">{{date.date | date:'MMMM, y'}}</ion-card-header>
+      <ion-card-header *ngIf="by == 'week'">{{date.dateString}}</ion-card-header>
+      
       <ion-list class="">
+
+        <ion-item class="alignCenter" *ngIf="date.completedGoals > 0">
+              <img src="./assets/icon/goalCompleted.png" alt="">&nbsp; {{'Goals Completed' | translate}}&nbsp;
+              <ion-badge item-end>x{{date.completedGoals}}</ion-badge>
+        </ion-item>
+
+        <ion-item class="alignCenter" *ngIf="date.missedGoals > 0">
+            <img src="./assets/icon/goalMissed.png" alt="">&nbsp; {{'Goals Missed' | translate}}&nbsp;
+            <ion-badge item-end>x{{date.missedGoals}}</ion-badge>
+      </ion-item>
+
         <ion-item class="alignCenter" *ngIf="date.happy > 0">
           <img src="./assets/icon/happy.png" alt="">&nbsp; {{'Happy' | translate}}&nbsp;
           <ion-badge item-end>x{{date.happy}}</ion-badge>
@@ -48,6 +72,8 @@
               </ion-item>
       </ion-list>
     </ion-card>
+
+   
   </ion-list>
 </ion-content>
 
