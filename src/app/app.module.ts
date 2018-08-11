@@ -42,7 +42,7 @@ export function createTranslateLoader(http: Http) {
     // CalendarPage,
     TodayPage,
     MoodPage,
-    
+    CalendarPage
   ],
   imports: [
     BrowserModule,
@@ -52,10 +52,10 @@ export function createTranslateLoader(http: Http) {
             provide: TranslateLoader,
             useFactory: (createTranslateLoader),
             deps: [Http]
-      }),
+      }),                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
     IonicStorageModule.forRoot(),
-    TooltipModule,
-    CalendarPageModule
+    TooltipModule
+    
   ],
   bootstrap: [IonicApp],
   entryComponents: [

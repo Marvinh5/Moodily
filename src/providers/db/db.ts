@@ -122,10 +122,10 @@ export class DbProvider {
     let goalsCount = Object.keys(goalsGroupedBy).map(key => {
       return {
         completedGoals: goalsGroupedBy[key].filter(goal => {
-          return goal.done || goal.percent >= 100
+          return goal.done
         }).length,
         missedGoals: goalsGroupedBy[key].filter(goal => {
-          return (!goal.done && goal.percent < 100) && moment(goal.date).isBefore(moment(), 'day')
+          return (!goal.done) && moment(goal.date).isBefore(moment(), 'day')
         }).length,
         key
       }

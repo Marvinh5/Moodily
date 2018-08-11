@@ -46,6 +46,8 @@ export class GoalsPage {
   getGoals() {
     return this.db.goals().then((goals: any[]) => {
 
+      if(!goals) goals= [];
+
       let sortFun = (a, b) => {
         return new Date(b.date).getTime() - new Date(a.date).getTime()
       };
